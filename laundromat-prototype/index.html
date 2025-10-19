@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laundromat Convergence - 3D Installation Prototype</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -104,7 +103,17 @@
             let canvas = createCanvas(900, 700, WEBGL);
             canvas.parent('canvasContainer');
             
-            doorSound = loadSound('washing_machine.mp3');
+            // Use HTML5 Audio instead of p5.sound
+            doorSound = new Audio('washing_machine.mp3');
+            doorSound.volume = 0.5; // 50% volume
+            
+            doorSound.addEventListener('error', (e) => {
+                console.error('Error loading audio file:', e);
+            });
+            
+            doorSound.addEventListener('canplaythrough', () => {
+                console.log('Audio file loaded successfully!');
+            });
             
             generateNYCOutline();
             
@@ -134,9 +143,12 @@
                 
                 // Play sound when opening the door (going from 0 to 120)
                 if (previousAngle === 0 && targetDoorAngle === 120) {
-                    if (doorSound && doorSound.isLoaded()) {
-                        doorSound.stop(); // Stop if already playing
-                        doorSound.play(); // Play from beginning
+                    console.log('Attempting to play sound...');
+                    if (doorSound) {
+                        doorSound.currentTime = 0; // Reset to beginning
+                        doorSound.play()
+                            .then(() => console.log('Sound playing!'))
+                            .catch(err => console.error('Error playing sound:', err));
                     }
                 }
             });
