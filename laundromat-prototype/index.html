@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laundromat Convergence - 3D Installation Prototype</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -93,6 +94,7 @@
         let rotationX = -0.4;
         let rotationY = 0.6;
         let zoom = 1;
+        let doorSound;
         
         let nycOutline = [];
         let laundryDots = [];
@@ -101,6 +103,8 @@
         function setup() {
             let canvas = createCanvas(900, 700, WEBGL);
             canvas.parent('canvasContainer');
+            
+            doorSound = loadSound('washing_machine.mp3');
             
             generateNYCOutline();
             
@@ -125,7 +129,16 @@
             
             // Event listeners
             document.getElementById('toggle-door').addEventListener('click', () => {
+                let previousAngle = targetDoorAngle;
                 targetDoorAngle = targetDoorAngle === 0 ? 120 : 0;
+                
+                // Play sound when opening the door (going from 0 to 120)
+                if (previousAngle === 0 && targetDoorAngle === 120) {
+                    if (doorSound && doorSound.isLoaded()) {
+                        doorSound.stop(); // Stop if already playing
+                        doorSound.play(); // Play from beginning
+                    }
+                }
             });
             
             document.getElementById('reset-view').addEventListener('click', () => {
