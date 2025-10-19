@@ -82,6 +82,7 @@
     <div id="controls">
         <button id="toggle-door">Toggle Drum Door</button>
         <button id="reset-view">Reset View</button>
+        <button id="test-sound">Test Sound</button>
     </div>
     
     <div id="canvasContainer"></div>
@@ -103,7 +104,7 @@
             let canvas = createCanvas(900, 700, WEBGL);
             canvas.parent('canvasContainer');
             
-            // Use HTML5 Audio instead of p5.sound
+            // Use HTML5 Audio with correct GitHub raw URL
             doorSound = new Audio('https://raw.githubusercontent.com/BurtKim-ust/DataVisualization/main/laundromat-prototype/washing_machine.mp3');
             doorSound.volume = 0.5; // 50% volume
             
@@ -157,6 +158,19 @@
                 rotationX = -0.4;
                 rotationY = 0.6;
                 zoom = 1;
+            });
+            
+            // Test button to check if audio works at all
+            document.getElementById('test-sound').addEventListener('click', () => {
+                console.log('Test sound button clicked');
+                if (doorSound) {
+                    doorSound.currentTime = 0;
+                    doorSound.play()
+                        .then(() => console.log('Test sound playing!'))
+                        .catch(err => console.error('Test sound error:', err));
+                } else {
+                    console.error('doorSound is null');
+                }
             });
         }
         
@@ -592,6 +606,3 @@
     </script>
 </body>
 </html>
-
-
-
